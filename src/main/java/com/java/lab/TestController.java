@@ -1,7 +1,6 @@
-package com.example.ilya.JavaLab1a2;
+package com.java.lab;
 
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 public class TestController {
@@ -14,12 +13,12 @@ public class TestController {
         }
     }
 
-    @RequestMapping(path = "/", method = RequestMethod.GET  )
+    @GetMapping(path = "/")
     public String GetGreeting() {
         return "Hello World By Ilya";
     }
 
-    @RequestMapping("/books")
+    @GetMapping("/books")
     public String GetBooks(
             @RequestParam(value = "id", required = false) String id) {
         if(id == null){
@@ -29,7 +28,7 @@ public class TestController {
             return "Book with id " + id + " is available";
         return "Incorrect book id";
     }
-    @RequestMapping("/author/{id}")
+    @GetMapping("/author/{id}")
     private String GetAuthor(@PathVariable String id) {
         if(TryParseInt(id) != -1)
             return "Author with id " + id + " is available";
