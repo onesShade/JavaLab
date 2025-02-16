@@ -18,7 +18,7 @@ public class TestController {
         return "Hello World By Ilya";
     }
 
-    @GetMapping("/books")
+    @GetMapping(value = "/books", produces = "text/plain")
     public String getBooks(
             @RequestParam(value = "id", required = false) String id) {
         if(id == null){
@@ -28,7 +28,7 @@ public class TestController {
             return "Book with id " + id + " is available";
         return "Incorrect book id";
     }
-    @GetMapping("/author/{id}")
+    @GetMapping(value = "/author/{id}", produces = "text/plain")
     public String getAuthor(@PathVariable String id) {
         if(tryParseInt(id) != -1)
             return "Author with id " + id + " is available";
