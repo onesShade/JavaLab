@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class TestController {
 
-    public int TryParseInt(String value) {
+    public int tryParseInt(String value) {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
@@ -14,23 +14,23 @@ public class TestController {
     }
 
     @GetMapping(path = "/")
-    public String GetGreeting() {
+    public String getGreeting() {
         return "Hello World By Ilya";
     }
 
     @GetMapping("/books")
-    public String GetBooks(
+    public String getBooks(
             @RequestParam(value = "id", required = false) String id) {
         if(id == null){
             return "All books are available";
         }
-        if(TryParseInt(id) != -1)
+        if(tryParseInt(id) != -1)
             return "Book with id " + id + " is available";
         return "Incorrect book id";
     }
     @GetMapping("/author/{id}")
-    private String GetAuthor(@PathVariable String id) {
-        if(TryParseInt(id) != -1)
+    public String getAuthor(@PathVariable String id) {
+        if(tryParseInt(id) != -1)
             return "Author with id " + id + " is available";
         return "Incorrect author id";
     }
