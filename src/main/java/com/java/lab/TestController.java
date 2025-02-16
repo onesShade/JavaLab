@@ -1,9 +1,21 @@
+/*
+ * TestController By Ilya Minov
+ * No copyright 16.02.2025
+ * Simple REST service that handles query parameter endpoint and path parameter
+ * endpoint.
+ * Version for the first Lab Work, name of the controller is to be changed
+ * later.
+*/
+
 package com.java.lab;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class TestController {
+    private static final String MESSAGE = "message";
 
     public int tryParseInt(String value) {
         try {
@@ -13,25 +25,42 @@ public class TestController {
         }
     }
 
-    @GetMapping(path = "/")
-    public String getGreeting() {
-        return "Hello World By Ilya";
+    @GetMapping(value = "/", produces = "application/json")
+    public Map<String, String> getGreeting() {
+        Map<String, String> response = new HashMap<>();
+        response.put(MESSAGE, "Hello World By Ilya");
+        return response;
     }
 
-    @GetMapping(value = "/books", produces = "text/plain")
-    public String getBooks(
+    @GetMapping(value = "/books", produces = "application/json")
+    public Map<String, String> getBooks(
             @RequestParam(value = "id", required = false) String id) {
-        if(id == null){
-            return "All books are available";
+        Map<String, String> response = new HashMap<>();
+
+        if (id == null) {
+            response.put(MESSAGE, "All books are available");
+        } else if (tryParseInt(id) == -1) {
+            response.put(MESSAGE, "Invalid book id");
+            response.put("type", "exception");
+        } else {
+            response.put("author", "Ilya");
+            response.put("id", id);
+            response.put("type", "book");
         }
-        if(tryParseInt(id) != -1)
-            return "Book with id " + id + " is available";
-        return "Incorrect book id";
+        return response;
     }
-    @GetMapping(value = "/author/{id}", produces = "text/plain")
-    public String getAuthor(@PathVariable String id) {
-        if(tryParseInt(id) != -1)
-            return "Author with id " + id + " is available";
-        return "Incorrect author id";
+
+    @GetMapping(value = "/author/{id}", produces = "application/json")
+    public Map<String, String> getAuthor(@PathVariable String id) {
+        Map<String, String> response = new HashMap<>();
+        if (tryParseInt(id) == -1) {
+            response.put(MESSAGE, "Invalid author id");
+            response.put("type", "exception");
+        } else {
+            response.put("name", "Ilya");
+            response.put("id", id);
+            response.put("type", "author");
+        }
+        return response;
     }
 }
