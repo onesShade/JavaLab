@@ -8,6 +8,7 @@ class JavaLab1a2ApplicationTests {
 
 	@Test
 	void contextLoads() {
+		//Not done yet
 	}
 
 }
