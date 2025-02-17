@@ -18,8 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**Book controller class that handles book resource.*/
 @RestController
-@RequestMapping(value = "/books")
+@RequestMapping("/books")
 public class BookController {
 
     private final BookService bookService;
@@ -29,7 +30,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping(produces = "application/json")
+    @GetMapping
     public List<Book> getBooks(
             @RequestParam(value = "id", required = false) String id) {
         if (id == null) {

@@ -2,13 +2,13 @@ package javalab.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class HomeController {
 
-    @GetMapping(value = "/", produces = "application/json")
+    @GetMapping(path = "/")
     public Map<String, String> getGreeting() {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Starting page");

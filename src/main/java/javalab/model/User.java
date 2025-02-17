@@ -1,7 +1,8 @@
 package javalab.model;
 
 public class User {
-    private int id;
+
+    private final int id;
     private String name;
 
     public User(int id, String name) {

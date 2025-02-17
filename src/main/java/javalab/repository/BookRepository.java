@@ -8,14 +8,16 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class BookRepository {
+
     private final List<Book> books;
 
     public BookRepository() {
         books = new ArrayList<>();
 
-        books.add(new Book(1, "Black", "Dmitro", 172));
-        books.add(new Book(2, "Power and will", "Moss", 216));
-        books.add(new Book(3, "Silence", "Great William", 71));
+        books.addAll(List.of(
+                new Book(1, "Black", "Dmitro", 172),
+                new Book(2, "Power and will", "Moss", 216),
+                new Book(3, "Silence", "Great William", 71)));
     }
 
     public List<Book> getBooks() {

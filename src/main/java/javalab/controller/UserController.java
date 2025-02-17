@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -19,7 +19,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping(value = "/{id}", produces = "application/json")
+    @GetMapping("/{id}")
     public User getUser(@PathVariable String id) {
         return userService.getUser(id).orElse(null);
     }

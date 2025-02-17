@@ -9,14 +9,15 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepository {
+
     private final List<User> users;
 
     public UserRepository() {
         users = new ArrayList<>();
-
-        users.add(new User(1, "Joseph"));
-        users.add(new User(2, "Robert"));
-        users.add(new User(3, "Mary"));
+        users.addAll(List.of(
+                new User(1, "Joseph"),
+                new User(2, "Robert"),
+                new User(3, "Mary")));
     }
 
     public List<User> getUsers() {
