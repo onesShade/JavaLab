@@ -24,4 +24,3 @@ public class UserController {
         return userService.getUser(id).orElse(null);
     }
 }
-

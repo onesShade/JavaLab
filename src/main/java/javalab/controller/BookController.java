@@ -1,12 +1,3 @@
-/*
- * TestController By Ilya Minov
- * No copyright 16.02.2025
- * Simple REST service that handles query parameter endpoint and path parameter
- * endpoint.
- * Version for the first Lab Work, name of the controller is to be changed
- * later.
-*/
-
 package javalab.controller;
 
 import java.util.List;
