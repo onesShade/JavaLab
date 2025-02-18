@@ -37,3 +37,4 @@ build/
 mvnw.cmd
 mvnw
 .mvn/*
+pom.xml
