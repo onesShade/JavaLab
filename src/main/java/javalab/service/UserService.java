@@ -1,11 +1,12 @@
 package javalab.service;
 
 import java.util.List;
-import java.util.Optional;
 import javalab.model.User;
 import javalab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UserService {
@@ -21,12 +22,13 @@ public class UserService {
         return userRepository.getUsers();
     }
 
-    public Optional<User> getUser(String id) {
+    public User getUser(String id) {
         int verifiedId = Tools.tryParseInt(id);
 
         if (verifiedId == -1) {
-            return Optional.empty();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong id notation");
         }
-        return userRepository.getUser(verifiedId);
+        return userRepository.getUser(verifiedId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 }
