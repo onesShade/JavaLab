@@ -1,6 +1,5 @@
 package javalab.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import javalab.model.Book;
 import javalab.repository.BookRepository;
@@ -23,15 +22,16 @@ public class BookService {
         return bookRepository.getBooks();
     }
 
-    public List<Book> getBookById(String id) {
-        List<Book> books = new ArrayList<>(1);
-        int verifiedId = Tools.tryParseInt(id);
-
-        if (verifiedId == -1) {
-            return books;
+    public List<Book> getBookByTitle(String title) {
+        List<Book> books = bookRepository.getBooks();
+        if (title != null) {
+            books = books.stream()
+                    .filter(book -> book.getTitle().equalsIgnoreCase(title))
+                    .toList();
         }
-        books.add(bookRepository.getBook(verifiedId).orElseThrow(()
-                -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found")));
+        if (books.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
+        }
         return books;
     }
 }

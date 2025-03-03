@@ -21,11 +21,8 @@ public class BookController {
     }
 
     @GetMapping
-    public List<Book> getBooks(
-            @RequestParam(value = "id", required = false) String id) {
-        if (id == null) {
-            return bookService.getBooks();
-        }
-        return bookService.getBookById(id);
+    public List<Book> getBooksById(
+            @RequestParam(value = "title", required = false) String title) {
+        return bookService.getBookByTitle(title);
     }
 }
