@@ -38,3 +38,5 @@ mvnw.cmd
 mvnw
 .mvn/*
 pom.xml
+
+src/main/resources/application.properties

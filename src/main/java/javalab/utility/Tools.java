@@ -13,4 +13,12 @@ public class Tools {
             return -1;
         }
     }
+
+    public static Long tryParseLong(String value) {
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            return (long) -1;
+        }
+    }
 }

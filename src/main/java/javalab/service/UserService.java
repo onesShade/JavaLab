@@ -20,16 +20,20 @@ public class UserService {
     }
 
     public List<User> getUsers() {
-        return userRepository.getUsers();
+        return userRepository.findAll();
     }
 
     public User getUser(String id) {
-        int verifiedId = Tools.tryParseInt(id);
+        Long verifiedId = Tools.tryParseLong(id);
 
         if (verifiedId == -1) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong id notation");
         }
-        return userRepository.getUser(verifiedId).orElseThrow(()
+        return userRepository.findById(verifiedId).orElseThrow(()
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    }
+
+    public User createUser(String name) {
+        return userRepository.save(new User(name));
     }
 }

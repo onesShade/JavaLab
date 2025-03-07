@@ -7,8 +7,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "authors")
+public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,11 +16,10 @@ public class User {
 
     private String name;
 
-    // Конструкторы, геттеры и сеттеры
-    public User() {
+    public Author() {
     }
 
-    public User(String name) {
+    public Author(String name) {
         this.name = name;
     }
 
