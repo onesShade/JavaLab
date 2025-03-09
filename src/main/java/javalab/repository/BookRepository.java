@@ -1,30 +1,9 @@
 package javalab.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import javalab.model.Book;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BookRepository {
-
-    private final List<Book> books;
-
-    public BookRepository() {
-        books = new ArrayList<>();
-
-        books.addAll(List.of(
-                new Book(1, "Black", "Dmitro", 172),
-                new Book(2, "Power and will", "Moss", 216),
-                new Book(3, "Silence", "Great William", 71)));
-    }
-
-    public List<Book> getBooks() {
-        return books;
-    }
-
-    public Optional<Book> getBook(int id) {
-        return books.stream().filter(b -> b.getId() == id).findFirst();
-    }
+public interface BookRepository extends JpaRepository<Book, Long> {
 }

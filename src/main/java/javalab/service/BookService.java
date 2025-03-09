@@ -1,12 +1,11 @@
 package javalab.service;
 
 import java.util.List;
+import java.util.Optional;
 import javalab.model.Book;
 import javalab.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class BookService {
@@ -19,19 +18,24 @@ public class BookService {
     }
 
     public List<Book> getBooks() {
-        return bookRepository.getBooks();
+        return bookRepository.findAll();
+    }
+
+    public Optional<Book> getBookById(Long id) {
+        return bookRepository.findById(id);
     }
 
     public List<Book> getBookByTitle(String title) {
-        List<Book> books = bookRepository.getBooks();
+        List<Book> books = bookRepository.findAll();
         if (title != null) {
             books = books.stream()
                     .filter(book -> book.getTitle().equalsIgnoreCase(title))
                     .toList();
         }
-        if (books.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
-        }
         return books;
+    }
+
+    public Book create(Book book) {
+        return bookRepository.save(book);
     }
 }

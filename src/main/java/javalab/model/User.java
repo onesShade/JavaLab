@@ -16,7 +16,6 @@ public class User {
 
     private String name;
 
-    // Конструкторы, геттеры и сеттеры
     public User() {
     }
 
