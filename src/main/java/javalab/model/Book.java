@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +34,12 @@ public class Book {
     )
     private List<Author> authors = new ArrayList<>();
 
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
+
     protected Book() {}
 
-    public Book(String title, List<Author> authors, int pages) {
+    public Book(String title, final List<Author> authors, int pages) {
         this.title = title;
         this.authors = authors;
         this.pages = pages;
@@ -49,8 +53,12 @@ public class Book {
         return authors;
     }
 
-    public void setAuthors(List<Author> authors) {
+    public void setAuthors(final List<Author> authors) {
         this.authors = authors;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
     }
 
     public String getTitle() {
@@ -73,4 +81,19 @@ public class Book {
         authors.add(author);
     }
 
+    public void removeAuthor(Author author) {
+        authors.remove(author);
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+    }
+
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
