@@ -20,8 +20,8 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany(mappedBy = "authors", fetch = FetchType.EAGER)
-    @JsonIgnoreProperties({"authors"})
+    @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"authors", "comments"})
     private List<Book> books;
 
     protected Author() {

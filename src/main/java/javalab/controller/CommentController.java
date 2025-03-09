@@ -24,22 +24,24 @@ public class CommentController {
     }
 
     @GetMapping
-    public List<Comment> getComments(@PathVariable Long id) {
+    public List<Comment> getByBook(@PathVariable Long id) {
         return commentService.getAllComments(id);
     }
 
     @PostMapping
-    public Comment createBook(@PathVariable Long id, @RequestBody Comment comment) {
+    public Comment create(@PathVariable Long id, @RequestBody Comment comment) {
         return commentService.create(id, comment);
     }
 
     @DeleteMapping("/{commentId}")
-    public void deleteBook(@PathVariable Long id, @PathVariable Long commentId) {
+    public void delete(@PathVariable Long id, @PathVariable Long commentId) {
         commentService.delete(id, commentId);
     }
 
     @PutMapping("/{commentId}")
-    public Comment deleteBook(@PathVariable Long commentId, @RequestBody Comment comment) {
-        return commentService.update(commentId, comment);
+    public Comment update(@PathVariable Long id,
+                          @PathVariable Long commentId,
+                          @RequestBody Comment comment) {
+        return commentService.update(id, commentId, comment);
     }
 }

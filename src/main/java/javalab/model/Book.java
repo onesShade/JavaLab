@@ -35,6 +35,7 @@ public class Book {
     private List<Author> authors = new ArrayList<>();
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"book"})
     private List<Comment> comments = new ArrayList<>();
 
     protected Book() {}

@@ -43,11 +43,12 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-    public Comment update(Long id, Comment comment) {
+    public Comment update(Long bookId, Long id, Comment comment) {
         if (!commentRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong comment id");
         }
         comment.setId(id);
+        comment.setBook(bookService.getById(bookId));
         return commentRepository.save(comment);
     }
 }

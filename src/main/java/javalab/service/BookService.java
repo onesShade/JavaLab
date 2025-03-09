@@ -4,6 +4,7 @@ import java.util.List;
 import javalab.model.Author;
 import javalab.model.Book;
 import javalab.repository.BookRepository;
+import javalab.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,10 +14,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, CommentRepository commentRepository) {
         this.bookRepository = bookRepository;
+        this.commentRepository = commentRepository;
     }
 
     public List<Book> getBooks() {
@@ -48,6 +51,7 @@ public class BookService {
         for (Author author : book.getAuthors()) {
             author.getBooks().remove(book);
         }
+        commentRepository.deleteAll(book.getComments());
         bookRepository.delete(book);
     }
 
