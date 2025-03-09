@@ -16,5 +16,5 @@
 
 * Backend - Java Spring Boot 
 * Frontend - ещё не выбран
-* Базы данных - ещё не выбран
+* Базы данных - PostgreSQL
 * Сборка - Maven

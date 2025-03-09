@@ -22,15 +22,12 @@ public class Author {
 
     @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"authors", "comments"})
-    private List<Book> books;
+    private List<Book> books = new ArrayList<>();
 
-    protected Author() {
-        this.books = new ArrayList<>();
-    }
+    protected Author() {}
 
     public Author(String name) {
         this.name = name;
-        this.books = new ArrayList<>();
     }
 
     public Long getId() {
