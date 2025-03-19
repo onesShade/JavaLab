@@ -1,10 +1,10 @@
 package javalab.service;
 
-import java.util.List;
-import java.util.Optional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import java.util.List;
+import java.util.Optional;
 import javalab.model.User;
 import javalab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

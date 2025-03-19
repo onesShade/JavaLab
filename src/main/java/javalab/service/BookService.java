@@ -39,7 +39,7 @@ public class BookService {
     }
 
     public Book getById(Long id) {
-        Book book = (Book) bookCache.get(id);
+        Book book = bookCache.get(id);
         if (book == null) {
             book = bookRepository.findById(id).orElseThrow(()
                     -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong book id"));

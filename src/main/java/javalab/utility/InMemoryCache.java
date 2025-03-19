@@ -1,42 +1,36 @@
 package javalab.utility;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
-public class InMemoryCache<K, V>  {
-
-    private final LinkedHashMap<K, V> cache;
+public class InMemoryCache<K, V> extends LinkedHashMap<K, V> {
+    private final int maxSize;
 
     public InMemoryCache(int maxSize) {
-
-        this.cache = new LinkedHashMap<K, V>(maxSize, 0.75f, true) {
-            @Override
-            protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-                return size() > maxSize;
-            }
-        };
+        super(maxSize, 0.75f, true);
+        this.maxSize = maxSize;
     }
 
-    public Object get(K key) {
-        return cache.get(key);
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+        return size() > maxSize; // Удаляем старый элемент, если размер превышен
     }
 
-    public void put(K key, V value) {
-        cache.put(key, value);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        InMemoryCache<?, ?> that = (InMemoryCache<?, ?>) o;
+        return maxSize == that.maxSize && super.equals(o);
     }
 
-    public void clear() {
-        cache.clear();
-    }
-
-    public boolean containsKey(K key) {
-        return cache.containsKey(key);
-    }
-
-    public void remove(K key) {
-        cache.remove(key);
-    }
-
-    public int size() {
-        return cache.size();
+    @Override
+    public int hashCode() {
+        return Objects.hash(maxSize, super.hashCode());
     }
 }

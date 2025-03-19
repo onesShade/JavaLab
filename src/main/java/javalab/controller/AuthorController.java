@@ -1,7 +1,6 @@
 package javalab.controller;
 
 import java.util.List;
-
 import javalab.model.Author;
 import javalab.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;

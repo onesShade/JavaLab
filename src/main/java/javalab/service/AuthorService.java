@@ -43,7 +43,7 @@ public class AuthorService {
     }
 
     public Author getById(Long id) {
-        Author author = (Author) authorCache.get(id);
+        Author author = authorCache.get(id);
         if (author == null) {
             author = authorRepository.findById(id).orElseThrow(()
                     -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong author id"));
