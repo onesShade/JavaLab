@@ -1,6 +1,7 @@
 package javalab.controller;
 
 import java.util.List;
+
 import javalab.model.Author;
 import javalab.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,13 @@ public class AuthorController {
     }
 
     @GetMapping
-    public List<Author> getAuthors() {
+    public List<Author> getAll() {
         return authorService.getAuthors();
+    }
+
+    @GetMapping("/{id}")
+    public Author getById(@PathVariable Long id) {
+        return authorService.getById(id);
     }
 
     @PostMapping
