@@ -25,7 +25,7 @@ public class Book {
     private String title;
     private int pages;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"books"})
     @JoinTable(
             name = "book_author",

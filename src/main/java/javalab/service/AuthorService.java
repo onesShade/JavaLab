@@ -9,7 +9,6 @@ import javalab.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -44,28 +43,28 @@ public class AuthorService {
         return authorRepository.findAll();
     }
 
-    @Transactional
-    public Author create(Author author, List<Long> bookIds) {
-        for (Long bookId : bookIds) {
-            Book book = bookService.getById(bookId);
-            author.addBook(book);
-            book.addAuthor(author);
+    public Author create(Author author) {
+        return authorRepository.save(author);
+    }
+
+    public Author addBookToAuthor(Long authorId, Long bookId) {
+        Author author = getById(authorId);
+        Book book = bookService.getById(bookId);
+        if (author.getBooks().contains(book)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Book already exists");
         }
+        author.addBook(book);
+        book.addAuthor(author);
         return authorRepository.save(author);
     }
 
     public void deleteBookFromAuthor(Long authorId, Long bookId) {
         Author author = getById(authorId);
         Book book = bookService.getById(bookId);
-
         book.removeAuthor(author);
         author.removeBook(book);
         bookRepository.save(book);
-        if (!author.getBooks().isEmpty()) {
-            authorRepository.save(author);
-        } else {
-            authorRepository.delete(author);
-        }
+        authorRepository.save(author);
     }
 
     public Author update(Long id, Author author) {
@@ -76,10 +75,6 @@ public class AuthorService {
 
     public void delete(Long id) {
         Author author = getById(id);
-
-        for (Book book : author.getBooks()) {
-            book.removeAuthor(author);
-        }
         authorRepository.delete(author);
     }
 }
