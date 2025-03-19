@@ -1,6 +1,8 @@
 package javalab.service;
 
 import java.util.List;
+import java.util.Optional;
+
 import javalab.model.Author;
 import javalab.model.Book;
 import javalab.repository.BookRepository;
@@ -32,14 +34,19 @@ public class BookService {
                         new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong book id"));
     }
 
-    public List<Book> getBookByTitle(String title) {
-        List<Book> books = bookRepository.findAll();
-        if (title != null) {
-            books = books.stream()
-                    .filter(book -> book.getTitle().equalsIgnoreCase(title))
-                    .toList();
+
+    public List<Book> getBookByFilter(Optional<String> author, Optional<Long> commentCountMin) {
+        if (author.isPresent() && commentCountMin.isPresent()) {
+            return bookRepository.findByAuthorNameAndCommentCount(author.get(),
+                    commentCountMin.get());
         }
-        return books;
+        if (author.isPresent()) {
+            return bookRepository.findByAuthor(author.get());
+        }
+        if (commentCountMin.isPresent()) {
+            return bookRepository.findByCommentCount(commentCountMin.get());
+        }
+        return bookRepository.findAll();
     }
 
     public Book create(Book book) {

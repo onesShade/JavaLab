@@ -1,6 +1,7 @@
 package javalab.controller;
 
 import java.util.List;
+import java.util.Optional;
 import javalab.model.Book;
 import javalab.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,10 @@ public class BookController {
 
     @GetMapping
     public List<Book> getBooks(
-            @RequestParam(value = "title", required = false) String title) {
-        return bookService.getBookByTitle(title);
+            @RequestParam(value = "author", required = false) Optional<String> author,
+            @RequestParam(value = "commentCountMin", required = false)
+            Optional<Long> commentCountMin) {
+        return bookService.getBookByFilter(author, commentCountMin);
     }
 
     @GetMapping("/{id}")
