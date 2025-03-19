@@ -1,6 +1,7 @@
 package javalab.controller;
 
 import java.util.List;
+import javalab.dto.CommentDto;
 import javalab.model.Comment;
 import javalab.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,13 @@ public class CommentController {
     }
 
     @GetMapping
-    public List<Comment> getByBook(@PathVariable Long id) {
+    public List<CommentDto> getByBook(@PathVariable Long id) {
         return commentService.getAllComments(id);
     }
 
     @PostMapping
-    public Comment create(@PathVariable Long id, @RequestBody Comment comment) {
+    public Comment create(@PathVariable Long id,
+                          @RequestBody CommentDto comment) {
         return commentService.create(id, comment);
     }
 

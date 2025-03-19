@@ -22,9 +22,16 @@ public class Comment {
     @JoinColumn(name = "book_id")
     private Book book;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"comments"})
+    @JoinColumn(name = "user_id")
+    private User user;
+
     String text;
 
-    protected  Comment() {}
+    public Comment() {
+        /* default constructor */
+    }
 
     public Long getId() {
         return id;
@@ -49,4 +56,13 @@ public class Comment {
     public void setBook(final Book book) {
         this.book = book;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
+    }
+
 }
