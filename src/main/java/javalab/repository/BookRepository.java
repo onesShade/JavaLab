@@ -20,6 +20,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             + "AND SIZE(b.comments) >= :commentCount")
     List<Book> findByAuthorNameAndCommentCount(
             @Param("authorName") String authorName,
-            @Param("commentCount") Long commentCount
-    );
+            @Param("commentCount") Long commentCount);
 }
