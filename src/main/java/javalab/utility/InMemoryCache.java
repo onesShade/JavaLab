@@ -8,7 +8,7 @@ public class InMemoryCache<K, V> extends LinkedHashMap<K, V> {
     private final int maxSize;
 
     public InMemoryCache(int maxSize) {
-        super(maxSize + 1, 1.f, true);
+        super(maxSize + 2, 1.f, true);
         this.maxSize = maxSize;
     }
 
