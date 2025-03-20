@@ -8,13 +8,13 @@ public class InMemoryCache<K, V> extends LinkedHashMap<K, V> {
     private final int maxSize;
 
     public InMemoryCache(int maxSize) {
-        super(maxSize, 0.75f, true);
+        super(maxSize + 1, 1.f, true);
         this.maxSize = maxSize;
     }
 
     @Override
     protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-        return size() > maxSize; // Удаляем старый элемент, если размер превышен
+        return size() > maxSize;
     }
 
     @Override
