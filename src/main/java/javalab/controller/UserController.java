@@ -25,7 +25,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<User> getAll(@RequestParam Optional<Long> commentCountMin) {
         return userService.getUsers(commentCountMin);
     }

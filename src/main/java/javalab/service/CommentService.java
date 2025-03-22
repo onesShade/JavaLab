@@ -9,9 +9,11 @@ import javalab.model.Comment;
 import javalab.model.User;
 import javalab.repository.CommentRepository;
 import javalab.repository.UserRepository;
+import javalab.utility.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -38,14 +40,16 @@ public class CommentService {
     }
 
     public List<CommentDto> getAllComments(Long bookId) {
-        List<Comment> comments = bookService.getById(bookId).getComments();
+        List<Comment> comments =
+                bookService.getById(bookId, Resource.LoadMode.DEFAULT).getComments();
         return comments.stream()
                 .map(commentMapper::toDto)
                 .toList();
     }
 
+    @Transactional
     public Comment create(Long id, CommentDto commentDto) {
-        Book book = bookService.getById(id);
+        Book book = bookService.getById(id, Resource.LoadMode.DIRECT);
         Optional<User> user = userRepository.findById(commentDto.getUserId());
         if (user.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong user id");
@@ -57,17 +61,20 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
+    @Transactional
     public void delete(Long bookId, Long commentId) {
-        bookService.getById(bookId).getComments().remove(getById(commentId));
+        bookService.getById(bookId, Resource.LoadMode.DIRECT)
+                .getComments().remove(getById(commentId));
         commentRepository.deleteById(commentId);
     }
 
+    @Transactional
     public Comment update(Long bookId, Long id, Comment comment) {
         if (!commentRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong comment id");
         }
         comment.setId(id);
-        comment.setBook(bookService.getById(bookId));
+        comment.setBook(bookService.getById(bookId, Resource.LoadMode.DIRECT));
         return commentRepository.save(comment);
     }
 }

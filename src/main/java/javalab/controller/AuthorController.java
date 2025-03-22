@@ -3,6 +3,7 @@ package javalab.controller;
 import java.util.List;
 import javalab.model.Author;
 import javalab.service.AuthorService;
+import javalab.utility.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,14 +25,14 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Author> getAll() {
         return authorService.getAuthors();
     }
 
     @GetMapping("/{id}")
     public Author getById(@PathVariable Long id) {
-        return authorService.getById(id);
+        return authorService.getById(id, Resource.LoadMode.DEFAULT);
     }
 
     @PostMapping
@@ -51,7 +52,7 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{authorId}/books/{bookId}")
-    public void deleteAuthor(@PathVariable Long authorId,
+    public void deleteBook(@PathVariable Long authorId,
                              @PathVariable Long bookId) {
         authorService.deleteBookFromAuthor(authorId, bookId);
     }

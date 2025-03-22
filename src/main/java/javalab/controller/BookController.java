@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import javalab.model.Book;
 import javalab.service.BookService;
+import javalab.utility.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,8 +27,8 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping
-    public List<Book> getBooks(
+    @GetMapping("/all")
+    public List<Book> getAll(
             @RequestParam(value = "author", required = false) Optional<String> author,
             @RequestParam(value = "commentCountMin", required = false)
             Optional<Long> commentCountMin) {
@@ -35,8 +36,8 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public Book getBooks(@PathVariable Long id) {
-        return bookService.getById(id);
+    public Book getById(@PathVariable Long id) {
+        return bookService.getById(id, Resource.LoadMode.DEFAULT);
     }
 
     @PostMapping
