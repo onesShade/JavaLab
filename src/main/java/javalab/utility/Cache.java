@@ -4,10 +4,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class InMemoryCache<K, V> extends LinkedHashMap<K, V> {
+public class Cache<K, V> extends LinkedHashMap<K, V> {
     private final int maxSize;
 
-    public InMemoryCache(int maxSize) {
+    public Cache(int maxSize) {
         super(maxSize + 2, 1.f, true);
         this.maxSize = maxSize;
     }
@@ -25,7 +25,7 @@ public class InMemoryCache<K, V> extends LinkedHashMap<K, V> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        InMemoryCache<?, ?> that = (InMemoryCache<?, ?>) o;
+        Cache<?, ?> that = (Cache<?, ?>) o;
         return maxSize == that.maxSize && super.equals(o);
     }
 

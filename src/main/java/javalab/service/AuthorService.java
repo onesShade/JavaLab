@@ -8,7 +8,7 @@ import javalab.model.Author;
 import javalab.model.Book;
 import javalab.repository.AuthorRepository;
 import javalab.repository.BookRepository;
-import javalab.utility.InMemoryCache;
+import javalab.utility.Cache;
 import javalab.utility.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,15 +23,15 @@ public class AuthorService {
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
     private final BookService bookService;
-    private final InMemoryCache<Long, Book> bookCache;
-    private final InMemoryCache<Long, Author> authorCache;
+    private final Cache<Long, Book> bookCache;
+    private final Cache<Long, Author> authorCache;
 
     @Autowired
     public AuthorService(AuthorRepository authorRepository,
                          BookService bookService,
                          BookRepository bookRepository,
-                         InMemoryCache<Long, Author> authorCache,
-                         InMemoryCache<Long, Book> bookCache) {
+                         Cache<Long, Author> authorCache,
+                         Cache<Long, Book> bookCache) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
         this.bookService = bookService;

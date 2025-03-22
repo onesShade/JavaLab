@@ -2,7 +2,7 @@ package javalab.config;
 
 import javalab.model.Author;
 import javalab.model.Book;
-import javalab.utility.InMemoryCache;
+import javalab.utility.Cache;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,12 +10,12 @@ import org.springframework.context.annotation.Configuration;
 public class CacheConfig {
 
     @Bean
-    public InMemoryCache<Long, Book> bookCache() {
-        return new InMemoryCache<>(16);
+    public Cache<Long, Book> bookCache() {
+        return new Cache<>(16);
     }
 
     @Bean
-    public InMemoryCache<Long, Author> authorCache() {
-        return new InMemoryCache<>(16);
+    public Cache<Long, Author> authorCache() {
+        return new Cache<>(16);
     }
 }

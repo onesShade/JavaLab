@@ -8,7 +8,7 @@ import javalab.model.Author;
 import javalab.model.Book;
 import javalab.repository.BookRepository;
 import javalab.repository.CommentRepository;
-import javalab.utility.InMemoryCache;
+import javalab.utility.Cache;
 import javalab.utility.Resource;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +23,14 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final CommentRepository commentRepository;
-    private final InMemoryCache<Long, Book> bookCache;
-    private final InMemoryCache<Long, Author> authorCache;
+    private final Cache<Long, Book> bookCache;
+    private final Cache<Long, Author> authorCache;
 
     @Autowired
     public BookService(BookRepository bookRepository,
                        CommentRepository commentRepository,
-                       InMemoryCache<Long, Book> bookCache,
-                       InMemoryCache<Long, Author> authorCache) {
+                       Cache<Long, Book> bookCache,
+                       Cache<Long, Author> authorCache) {
         this.bookRepository = bookRepository;
         this.commentRepository = commentRepository;
         this.bookCache = bookCache;
