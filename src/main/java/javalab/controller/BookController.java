@@ -2,17 +2,15 @@ package javalab.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-
-import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import javalab.model.Book;
 import javalab.service.BookService;
 import javalab.utility.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/books")
+@Validated
 @Tag(name = "Book controller", description = "Allows to add/get/delete/update books")
 public class BookController {
 
@@ -64,16 +63,13 @@ public class BookController {
             summary = "Create a new book",
             description = "Creates a new book with the provided details. Returns the created book."
     )
-    public Book createBook(@Valid @RequestBody Book book, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException("Invalid book data");
-        }
+    public Book createBook(@Valid @RequestBody Book book) {
         return bookService.create(book);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Delete a book by ID")
+    @Operation(summary = "Delete book by ID")
     public void deleteBook(@PathVariable Long id) {
         bookService.delete(id);
     }
@@ -85,10 +81,7 @@ public class BookController {
             description = "Updates an existing book by its unique ID. Returns the updated book."
     )
     public Book updateBook(@Valid @RequestBody Book book,
-                           @PathVariable Long id, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException("Invalid book data");
-        }
+                           @PathVariable Long id) {
         return bookService.update(id, book);
     }
 }

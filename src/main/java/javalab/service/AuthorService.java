@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javalab.exception.ConflictException;
+import javalab.exception.ConflictBasicException;
 import javalab.exception.NotFoundException;
 import javalab.model.Author;
 import javalab.model.Book;
@@ -78,7 +78,7 @@ public class AuthorService {
         Book book = bookService.getById(bookId, Resource.LoadMode.DIRECT);
 
         if (author.getBooks().contains(book)) {
-            throw new ConflictException("Book already exists");
+            throw new ConflictBasicException("Book already exists");
         }
 
         author.addBook(book);

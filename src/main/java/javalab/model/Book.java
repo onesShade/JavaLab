@@ -1,6 +1,7 @@
 package javalab.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,26 +13,41 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Setter
+@Getter
+@NoArgsConstructor
+@Schema(description = "Model of book")
 @Table(name = "books")
 public class Book {
 
+    @Schema(description = "Identifier of the book", example = "1")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Title cannot be null")
-    @Size(min = 1, max = 255, message = "Title must be between 1 and 255 characters")
+    @Schema(description = "Title of a book", example = "Blood, sweat and pixels")
+    @NotBlank(message = "Title shouldn't be empty")
+    @Size(max = 128, message = "Max 128 characters for title")
+    @Pattern(regexp = "^[a-zA-Z'\\d\\s]+$",
+            message = "Title shall not contain special symbols")
     private String title;
 
+    @Schema(description = "Number of pages of a book", example = "15")
+    @Pattern(regexp = "^\\d+$", message = "Number must be valid")
     private int pages;
 
+    @Schema(description = "List of authors of the book")
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"books"})
     @JoinTable(
@@ -45,45 +61,12 @@ public class Book {
     @JsonIgnoreProperties({"book", "user"})
     private List<Comment> comments = new ArrayList<>();
 
-    protected Book() {}
-
     public Book(String title, final List<Author> authors, int pages) {
         this.title = title;
         this.authors = authors;
         this.pages = pages;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public List<Author> getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(final List<Author> authors) {
-        this.authors = authors;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getPages() {
-        return pages;
-    }
-
-    public void setPages(int pages) {
-        this.pages = pages;
-    }
 
     public void addAuthor(Author author) {
         authors.add(author);
@@ -95,14 +78,6 @@ public class Book {
 
     public void addComment(Comment comment) {
         comments.add(comment);
-    }
-
-    public void removeComment(Comment comment) {
-        comments.remove(comment);
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     @Override

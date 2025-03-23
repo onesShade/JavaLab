@@ -1,5 +1,9 @@
 package javalab.controller;
 
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import javalab.model.User;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name = "User controller", description = "Allows to add, get, delete, or update users.")
 public class UserController {
 
     private final UserService userService;
@@ -29,30 +34,35 @@ public class UserController {
     }
 
     @GetMapping("/all")
+    @Operation(summary = "Get all users")
     public List<User> getAll(@RequestParam Optional<Long> commentCountMin) {
         return userService.getUsers(commentCountMin);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get user by id")
     public User getById(@PathVariable Long id) {
         return userService.getUser(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User create(@RequestBody User user) {
+    @Operation(summary = "Create new user")
+    public User create(@Valid @RequestBody User user) {
         return userService.create(user);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete user by ID")
     public void delete(@PathVariable Long id) {
         userService.delete(id);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public User update(@PathVariable Long id, @RequestBody User user) {
+    @Operation(summary = "Update user by ID")
+    public User update(@PathVariable Long id, @Valid @RequestBody User user) {
         return userService.update(id, user);
     }
 }
