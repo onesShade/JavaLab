@@ -43,7 +43,7 @@ public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String, Object>>
-        handleConstraintViolationException(ConstraintViolationException ex) {
+            handleConstraintViolationException(ConstraintViolationException ex) {
         List<String> errors = ex.getConstraintViolations().stream()
                 .map(violation ->
                         violation.getPropertyPath().toString() + ": " + violation.getMessage())
@@ -54,7 +54,7 @@ public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>>
-        handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+            handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .toList();
