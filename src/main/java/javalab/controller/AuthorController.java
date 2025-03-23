@@ -82,7 +82,7 @@ public class AuthorController {
             description = "Unlinks a existing connection between book and author."
     )
     public void deleteBook(@PathVariable Long authorId,
-                             @PathVariable Long bookId) {
+                           @PathVariable Long bookId) {
         authorService.deleteBookFromAuthor(authorId, bookId);
     }
 
