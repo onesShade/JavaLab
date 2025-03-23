@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice(
         basePackages = "javalab.controller",
@@ -44,21 +45,34 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String, Object>>
             handleConstraintViolationException(ConstraintViolationException ex) {
-        List<String> errors = ex.getConstraintViolations().stream()
+        List<String> message = ex.getConstraintViolations().stream()
                 .map(violation ->
                         violation.getPropertyPath().toString() + ": " + violation.getMessage())
                 .toList();
 
-        return new BasicException(errors, HttpStatus.BAD_REQUEST).getResponseEntity();
+        return new BasicException(message, HttpStatus.BAD_REQUEST).getResponseEntity();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>>
             handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
+        List<String> message = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .toList();
 
-        return new BasicException(errors, HttpStatus.BAD_REQUEST).getResponseEntity();
+        return new BasicException(message, HttpStatus.BAD_REQUEST).getResponseEntity();
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, Object>>
+            handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        String message = String.format(
+                "Parameter '%s' has invalid value: '%s'. Expected type: %s",
+                ex.getName(),
+                ex.getValue(),
+                ex.getRequiredType() != null ? ex.getRequiredType() : "unknown"
+        );
+
+        return new BasicException(message, HttpStatus.BAD_REQUEST).getResponseEntity();
     }
 }
