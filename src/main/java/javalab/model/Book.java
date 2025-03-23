@@ -44,7 +44,6 @@ public class Book {
     private String title;
 
     @Schema(description = "Number of pages of a book", example = "15")
-    @Pattern(regexp = "^\\d+$", message = "Number must be valid")
     private int pages;
 
     @Schema(description = "List of authors of the book")

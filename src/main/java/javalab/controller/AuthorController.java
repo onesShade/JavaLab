@@ -8,6 +8,7 @@ import javalab.service.AuthorService;
 import javalab.utility.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/author")
+@Validated
 @Tag(name = "Author controller", description = "Allows to add/get/delete/update authors. "
         + "Also allows to add/delete books to an author.")
 public class AuthorController {
