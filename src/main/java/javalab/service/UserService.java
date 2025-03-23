@@ -42,7 +42,7 @@ public class UserService {
     public User getUser(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() ->
-                        new NotFoundException(USER_ID_NOT_FOUND));
+                        new NotFoundException(USER_ID_NOT_FOUND + id));
     }
 
     @Transactional
@@ -53,7 +53,7 @@ public class UserService {
     @Transactional
     public void delete(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new NotFoundException(USER_ID_NOT_FOUND);
+            throw new NotFoundException(USER_ID_NOT_FOUND + id);
         }
         User user = getUser(id);
         commentRepository.deleteAll(user.getComments());
@@ -63,7 +63,7 @@ public class UserService {
     @Transactional
     public User update(Long id, User user) {
         if (!userRepository.existsById(id)) {
-            throw new NotFoundException(USER_ID_NOT_FOUND);
+            throw new NotFoundException(USER_ID_NOT_FOUND + id);
         }
         user.setId(id);
         return userRepository.save(user);
