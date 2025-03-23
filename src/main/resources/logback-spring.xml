@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Имя лог-файла -->
+    <property name="LOG_FILE" value="logs/app.log" />
+
+    <!-- Паттерн для вывода логов -->
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{36} - %msg%n" />
+
+    <!-- Консольный аппендер -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- Файловый аппендер с ротацией -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Имя файла с датой (ротация по дням) -->
+            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- Хранение логов за последние 7 дней -->
+            <maxHistory>7</maxHistory>
+            <!-- Очистка старых логов при запуске -->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Уровень логирования -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" /> <!-- Логи в консоль -->
+        <appender-ref ref="FILE" />    <!-- Логи в файл -->
+    </root>
+</configuration>

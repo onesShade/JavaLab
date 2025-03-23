@@ -5,19 +5,19 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import java.util.List;
 import java.util.Optional;
+import javalab.exception.NotFoundException;
 import javalab.model.User;
 import javalab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
+    public static final String USER_ID_NOT_FOUND = "User id not found";
 
     @PersistenceContext
     private EntityManager entityManager;
-
     private final UserRepository userRepository;
 
     @Autowired
@@ -39,10 +39,28 @@ public class UserService {
     public User getUser(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong user id"));
+                        new NotFoundException(USER_ID_NOT_FOUND));
     }
 
+    @Transactional
     public User create(User user) {
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException(USER_ID_NOT_FOUND);
+        }
+        userRepository.deleteById(id);
+    }
+
+    @Transactional
+    public User update(Long id, User user) {
+        if (!userRepository.existsById(id)) {
+            throw new NotFoundException(USER_ID_NOT_FOUND);
+        }
+        user.setId(id);
         return userRepository.save(user);
     }
 }

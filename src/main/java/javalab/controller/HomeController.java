@@ -1,17 +1,17 @@
 package javalab.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Tag(name = "Default controller", description = "Controller to see if app is up")
 public class HomeController {
 
-    @GetMapping(path = "/")
-    public Map<String, String> getGreeting() {
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Starting page");
-        return response;
+    @GetMapping
+    @Operation(summary = "Default respond")
+    public String getGreeting() {
+        return "App is up!";
     }
 }

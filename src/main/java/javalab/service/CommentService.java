@@ -3,6 +3,8 @@ package javalab.service;
 import java.util.List;
 import java.util.Optional;
 import javalab.dto.CommentDto;
+import javalab.exception.BadRequestException;
+import javalab.exception.NotFoundException;
 import javalab.mapper.CommentMapper;
 import javalab.model.Book;
 import javalab.model.Comment;
@@ -11,13 +13,12 @@ import javalab.repository.CommentRepository;
 import javalab.repository.UserRepository;
 import javalab.utility.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class CommentService {
+    public static final String COMMENT_ID_NOT_FOUND = "Comment id not found: ";
 
     private final CommentRepository commentRepository;
     private final BookService bookService;
@@ -36,7 +37,7 @@ public class CommentService {
     public Comment getById(Long id) {
         return commentRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong book id"));
+                        new NotFoundException(COMMENT_ID_NOT_FOUND + id));
     }
 
     public List<CommentDto> getAllComments(Long bookId) {
@@ -52,7 +53,7 @@ public class CommentService {
         Book book = bookService.getById(id, Resource.LoadMode.DIRECT);
         Optional<User> user = userRepository.findById(commentDto.getUserId());
         if (user.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong user id");
+            throw new BadRequestException(UserService.USER_ID_NOT_FOUND + commentDto.getUserId());
         }
         Comment comment = commentMapper.toEntity(commentDto);
         comment.setUser(user.get());
@@ -63,17 +64,20 @@ public class CommentService {
 
     @Transactional
     public void delete(Long bookId, Long commentId) {
+        if (!commentRepository.existsById(commentId)) {
+            throw new NotFoundException(COMMENT_ID_NOT_FOUND + commentId);
+        }
         bookService.getById(bookId, Resource.LoadMode.DIRECT)
                 .getComments().remove(getById(commentId));
         commentRepository.deleteById(commentId);
     }
 
     @Transactional
-    public Comment update(Long bookId, Long id, Comment comment) {
-        if (!commentRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong comment id");
+    public Comment update(Long bookId, Long commentId, Comment comment) {
+        if (!commentRepository.existsById(commentId)) {
+            throw new NotFoundException(COMMENT_ID_NOT_FOUND + commentId);
         }
-        comment.setId(id);
+        comment.setId(commentId);
         comment.setBook(bookService.getById(bookId, Resource.LoadMode.DIRECT));
         return commentRepository.save(comment);
     }

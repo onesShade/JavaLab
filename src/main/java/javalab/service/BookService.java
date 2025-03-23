@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javalab.exception.NotFoundException;
 import javalab.model.Author;
 import javalab.model.Book;
 import javalab.repository.BookRepository;
@@ -12,13 +13,12 @@ import javalab.utility.Cache;
 import javalab.utility.Resource;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class BookService {
+    public static final String BOOK_ID_NOT_FOUND = "Book id not found: ";
     Logger logger = Logger.getLogger(getClass().getName());
 
     private final BookRepository bookRepository;
@@ -41,12 +41,11 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-
     public Book getById(Long id, Resource.LoadMode mode) {
         Book book = mode == Resource.LoadMode.DEFAULT ? bookCache.get(id) : null;
         if (book == null) {
             book = bookRepository.findById(id).orElseThrow(()
-                    -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong book id"));
+                    -> new NotFoundException(BOOK_ID_NOT_FOUND + id));
             if (mode == Resource.LoadMode.DIRECT) {
                 bookCache.remove(id);
             } else {

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javalab.exception.ConflictException;
+import javalab.exception.NotFoundException;
 import javalab.model.Author;
 import javalab.model.Book;
 import javalab.repository.AuthorRepository;
@@ -11,13 +13,13 @@ import javalab.repository.BookRepository;
 import javalab.utility.Cache;
 import javalab.utility.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthorService {
+    public static final String AUTHOR_ID_NOT_FOUND = "Author id not found: ";
+
     Logger logger = Logger.getLogger(getClass().getName());
 
     private final AuthorRepository authorRepository;
@@ -49,7 +51,7 @@ public class AuthorService {
         Author author = mode == Resource.LoadMode.DEFAULT ? authorCache.get(id) : null;
         if (author == null) {
             author = authorRepository.findById(id).orElseThrow(()
-                    -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong author id"));
+                    -> new NotFoundException(AUTHOR_ID_NOT_FOUND + id));
             if (mode == Resource.LoadMode.DIRECT) {
                 authorCache.remove(id);
             } else {
@@ -76,7 +78,7 @@ public class AuthorService {
         Book book = bookService.getById(bookId, Resource.LoadMode.DIRECT);
 
         if (author.getBooks().contains(book)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Book already exists");
+            throw new ConflictException("Book already exists");
         }
 
         author.addBook(book);
@@ -92,7 +94,7 @@ public class AuthorService {
         Book book = bookService.getById(bookId, Resource.LoadMode.DIRECT);
 
         if (!author.getBooks().contains(book)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Book does not exist");
+            throw new NotFoundException("Author doesn't have book id: " + bookId);
         }
 
         book.removeAuthor(author);
