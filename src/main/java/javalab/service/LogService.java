@@ -21,7 +21,6 @@ public class LogService {
     private static final DateTimeFormatter LOG_DATE_FORMATTER
             = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-
     public ResponseEntity<String> getLogsByDate(String date) {
         File logFile = new File(LOG_FILE_PATH);
         if (!logFile.exists()) {

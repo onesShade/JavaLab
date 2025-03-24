@@ -13,25 +13,17 @@
         </encoder>
     </appender>
 
-
-    <!-- Файловый аппендер с ротацией -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- Кастомный файловый аппендер -->
+    <appender name="FILE" class="javalab.utility.SingleFileWithRetentionAppender">
         <file>${LOG_FILE}</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- Имя файла с датой (ротация по дням) -->
-            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- Хранение логов за последние 7 дней -->
-            <maxHistory>7</maxHistory>
-            <!-- Очистка старых логов при запуске -->
-            <cleanHistoryOnStart>true</cleanHistoryOnStart>
-        </rollingPolicy>
         <encoder>
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
+        <maxHistory>7</maxHistory> <!-- Хранение логов за 7 дней -->
     </appender>
 
     <!-- Уровень логирования -->
-    <root level="INFO">
+    <root level="TRACE">
         <appender-ref ref="CONSOLE" /> <!-- Логи в консоль -->
         <appender-ref ref="FILE" />    <!-- Логи в файл -->
     </root>

@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-@ControllerAdvice(
-        basePackages = "javalab.controller",
-        annotations = ExceptionHandler.class
-)
+@ControllerAdvice
 public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(NotFoundException.class)
@@ -26,8 +23,8 @@ public class ExceptionHandlerAdvice {
         return ex.getResponseEntity();
     }
 
-    @ExceptionHandler(ConflictBasicException.class)
-    public ResponseEntity<Map<String, Object>> handleConflictException(ConflictBasicException ex) {
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleConflictException(ConflictException ex) {
         return ex.getResponseEntity();
     }
 
@@ -36,10 +33,10 @@ public class ExceptionHandlerAdvice {
         return ex.getResponseEntity();
     }
 
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleOtherException(Exception ex) {
-        return new BasicException(ex.getMessage(), HttpStatus.BAD_REQUEST).getResponseEntity();
+        return new BasicException(ex.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR).getResponseEntity();
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

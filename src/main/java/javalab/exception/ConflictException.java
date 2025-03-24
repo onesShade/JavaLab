@@ -2,8 +2,8 @@ package javalab.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class ConflictBasicException extends BasicException {
-    public ConflictBasicException(String message) {
+public class ConflictException extends BasicException {
+    public ConflictException(String message) {
         super(message, HttpStatus.CONFLICT);
     }
 }

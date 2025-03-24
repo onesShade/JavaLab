@@ -52,7 +52,7 @@ public class BookService {
                 bookCache.put(id, book);
             }
         } else {
-            logger.log(Level.INFO, "Book {0} was loaded from cache", id.intValue());
+            logger.log(Level.FINE, "Book {0} was loaded from cache", id.intValue());
         }
         Hibernate.initialize(book.getAuthors());
         return book;
