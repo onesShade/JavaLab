@@ -2,6 +2,7 @@ package javalab.service;
 
 import static javalab.service.BookService.BOOK_ID_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -550,9 +551,7 @@ class BookServiceTest {
         Book result = bookService.update(bookId, updatedBook);
 
         // Assert
-        assertEquals(bookId, result.getId());
-        assertEquals("New Title", result.getTitle());
-        assertEquals(300, result.getPages());
+        assertEquals(result, updatedBook);
         verify(bookRepository).save(updatedBook);
         verify(cacheHolder.getBookCache()).remove(bookId);
     }

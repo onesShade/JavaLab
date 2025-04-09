@@ -15,7 +15,6 @@ import javalab.repository.BookRepository;
 import javalab.utility.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthorService {
@@ -68,7 +67,6 @@ public class AuthorService {
         return authorRepository.findAll();
     }
 
-    @Transactional
     public Author create(Author author) {
         if (author == null) {
             throw new BadRequestException("Author cannot be null");
@@ -76,7 +74,6 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
-    @Transactional
     public Author addBookToAuthor(Long authorId, Long bookId) {
         Author author = getById(authorId, Resource.LoadMode.DIRECT);
         Optional<Book> book = bookRepository.findById(bookId);
@@ -97,7 +94,6 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
-    @Transactional
     public void deleteBookFromAuthor(Long authorId, Long bookId) {
         Author author = getById(authorId, Resource.LoadMode.DIRECT);
         Optional<Book> book = bookRepository.findById(bookId);
@@ -105,12 +101,11 @@ public class AuthorService {
             throw new NotFoundException("Book not found");
         }
 
-        cacheHolder.getBookCache().remove(bookId);
-
         if (!author.getBooks().contains(book.get())) {
             throw new NotFoundException("Author doesn't have book id: " + bookId);
         }
 
+        cacheHolder.getBookCache().remove(bookId);
         book.get().removeAuthor(author);
         author.removeBook(book.get());
 
@@ -118,7 +113,6 @@ public class AuthorService {
         authorRepository.save(author);
     }
 
-    @Transactional
     public Author update(Long id, Author author) {
         getById(id, Resource.LoadMode.DEFAULT);
         author.setId(id);
@@ -126,7 +120,6 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
-    @Transactional
     public void delete(Long id) {
         Author author = getById(id, Resource.LoadMode.DIRECT);
         for (Book book : author.getBooks()) {

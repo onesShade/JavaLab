@@ -22,6 +22,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -177,28 +178,45 @@ class UserServiceTest {
 
     @Test
     void update_ShouldUpdateUser() {
+        // Given
         Long userId = 1L;
-        User user = new User(userId, "testuser", List.of(new Comment(), new Comment()));
+        User updatedUser = new User(userId, "newname", List.of(new Comment(), new Comment()));
 
         when(userRepository.existsById(userId)).thenReturn(true);
-        when(userRepository.save(user)).thenReturn(user);
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        User res = userService.update(userId, user);
+        // When
+        User result = userService.update(userId, updatedUser);
 
-        assertEquals(userId, user.getId());
-        assertEquals("testuser", user.getName());
-        assertEquals(user, res);
-        verify(userRepository).save(user);
+        // Then
+        assertEquals(result.getId(), userId);
+        assertEquals("newname", result.getName());
+        verify(userRepository).save(argThat(user ->
+                user.getId().equals(userId) &&
+                        user.getName().equals("newname")
+        ));
     }
 
     @Test
-    void update_NonExistingUser_ShouldThrowNotFoundException() {
+    void update_ShouldThrowWhenUserNotFound() {
         Long userId = 1L;
-        User user = new User(userId, "Baka", List.of(new Comment(), new Comment()));
+        User user = new User(userId, "test", Collections.emptyList());
 
         when(userRepository.existsById(userId)).thenReturn(false);
 
         assertThrows(NotFoundException.class, () -> userService.update(userId, user));
+
+        verify(userRepository, never()).save(any());
     }
 
+    @Test
+    void update_ShouldRollbackOnException() {
+        Long userId = 1L;
+        User user = new User(userId, "test", Collections.emptyList());
+
+        when(userRepository.existsById(userId)).thenReturn(true);
+        when(userRepository.save(any())).thenThrow(new RuntimeException("DB error"));
+
+        assertThrows(RuntimeException.class, () -> userService.update(userId, user));
+    }
 }

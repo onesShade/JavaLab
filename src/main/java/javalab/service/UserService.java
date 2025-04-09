@@ -1,7 +1,5 @@
 package javalab.service;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 import javalab.exception.NotFoundException;
@@ -10,16 +8,12 @@ import javalab.repository.CommentRepository;
 import javalab.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 
 @Service
 public class UserService {
     public static final String USER_ID_NOT_FOUND = "User id not found: ";
     private final CommentRepository commentRepository;
 
-    @PersistenceContext
-    private EntityManager entityManager;
     private final UserRepository userRepository;
 
     @Autowired
@@ -41,12 +35,10 @@ public class UserService {
                         new NotFoundException(USER_ID_NOT_FOUND + id));
     }
 
-    @Transactional
     public User create(User user) {
         return userRepository.save(user);
     }
 
-    @Transactional
     public void delete(Long id) {
         if (!userRepository.existsById(id)) {
             throw new NotFoundException(USER_ID_NOT_FOUND + id);
@@ -56,7 +48,6 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    @Transactional
     public User update(Long id, User user) {
         if (!userRepository.existsById(id)) {
             throw new NotFoundException(USER_ID_NOT_FOUND + id);

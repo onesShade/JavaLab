@@ -153,5 +153,9 @@ class LogServiceTest {
         }
     }
 
-
+    @Test
+    void constructorWithoutArgs_shouldNotBeNull() {
+        LogService logServiceTest = new LogService();
+        assertNotNull(logServiceTest);
+    }
 }

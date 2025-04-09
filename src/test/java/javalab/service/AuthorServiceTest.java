@@ -384,6 +384,27 @@ class AuthorServiceTest {
     }
 
     @Test
+    void deleteBookFromAuthor_ShouldThrowNotFoundException_AuthorDontContainIt() {
+        // Arrange
+        Long authorId = 1L;
+        Long bookId = 99L; // Not linked
+
+        Author author = new Author("George Orwell", authorId, new ArrayList<>());
+        Book book = new Book(bookId, "Book", 2023, new ArrayList<>(), new ArrayList<>());
+
+        when(cacheHolder.getAuthorCache()).thenReturn(authorCache);
+        when(authorRepository.findById(authorId)).thenReturn(Optional.of(author));
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+
+        // Act & Assert
+        assertThrows(NotFoundException.class,
+                () -> authorService.deleteBookFromAuthor(authorId, bookId));
+
+        verify(authorRepository, never()).save(any());
+        verify(bookRepository, never()).save(any());
+    }
+
+    @Test
     void deleteBookFromAuthor_ShouldMaintainBidirectionalConsistency() {
         // Arrange
         Long authorId = 1L;

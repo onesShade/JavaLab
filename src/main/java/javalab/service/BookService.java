@@ -15,7 +15,6 @@ import javalab.utility.Resource;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BookService {
@@ -71,7 +70,6 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    @Transactional
     public Book create(Book book) {
         if (book == null) {
             throw new BadRequestException("Book cannot be null");
@@ -79,7 +77,6 @@ public class BookService {
         return bookRepository.save(book);
     }
 
-    @Transactional
     public void delete(Long id) {
         Book book = getById(id, Resource.LoadMode.DIRECT);
 
@@ -95,7 +92,6 @@ public class BookService {
         cacheHolder.getBookCache().remove(id);
     }
 
-    @Transactional
     public Book update(Long id, Book book) {
         getById(id, Resource.LoadMode.DIRECT);
         book.setId(id);

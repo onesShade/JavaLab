@@ -2,7 +2,6 @@ package javalab.service;
 
 import java.util.List;
 import java.util.Optional;
-import javalab.config.CacheHolder;
 import javalab.dto.CommentDto;
 import javalab.exception.NotFoundException;
 import javalab.mapper.CommentMapper;
@@ -14,7 +13,6 @@ import javalab.repository.UserRepository;
 import javalab.utility.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -50,7 +48,6 @@ public class CommentService {
                 .toList();
     }
 
-    @Transactional
     public Comment create(Long id, CommentDto commentDto) {
         Book book = bookService.getById(id, Resource.LoadMode.DIRECT);
         Optional<User> user = userRepository.findById(commentDto.getUserId());
@@ -64,7 +61,6 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    @Transactional
     public void delete(Long bookId, Long commentId) {
         if (!commentRepository.existsById(commentId)) {
             throw new NotFoundException(COMMENT_ID_NOT_FOUND + commentId);
@@ -74,7 +70,6 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-    @Transactional
     public Comment update(Long bookId, Long commentId, Comment comment) {
         if (!commentRepository.existsById(commentId)) {
             throw new NotFoundException(COMMENT_ID_NOT_FOUND + commentId);
