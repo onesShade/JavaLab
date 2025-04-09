@@ -1,4 +1,4 @@
-package javalab.utility;
+package javalab.logger;
 
 import ch.qos.logback.core.FileAppender;
 import java.io.File;

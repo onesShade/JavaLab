@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javalab.config.CacheHolder;
+import javalab.exception.BadRequestException;
 import javalab.exception.NotFoundException;
 import javalab.model.Author;
 import javalab.model.Book;
 import javalab.repository.BookRepository;
 import javalab.repository.CommentRepository;
-import javalab.utility.Cache;
 import javalab.utility.Resource;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +20,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class BookService {
     public static final String BOOK_ID_NOT_FOUND = "Book id not found: ";
-    Logger logger = Logger.getLogger(getClass().getName());
+    Logger logger;
 
     private final BookRepository bookRepository;
     private final CommentRepository commentRepository;
-    private final Cache<Long, Book> bookCache;
-    private final Cache<Long, Author> authorCache;
+    private final CacheHolder cacheHolder;
 
     @Autowired
     public BookService(BookRepository bookRepository,
                        CommentRepository commentRepository,
-                       Cache<Long, Book> bookCache,
-                       Cache<Long, Author> authorCache) {
+                       CacheHolder cacheHolder, AuthorService authorService) {
         this.bookRepository = bookRepository;
         this.commentRepository = commentRepository;
-        this.bookCache = bookCache;
-        this.authorCache = authorCache;
+        this.cacheHolder = cacheHolder;
+        this.logger = Logger.getLogger(this.getClass().getName());
     }
 
     public List<Book> getBooks() {
@@ -42,17 +41,17 @@ public class BookService {
     }
 
     public Book getById(Long id, Resource.LoadMode mode) {
-        Book book = mode == Resource.LoadMode.DEFAULT ? bookCache.get(id) : null;
+        Book book = mode == Resource.LoadMode.DEFAULT ? cacheHolder.getBookCache().get(id) : null;
         if (book == null) {
             book = bookRepository.findById(id).orElseThrow(()
                     -> new NotFoundException(BOOK_ID_NOT_FOUND + id));
             if (mode == Resource.LoadMode.DIRECT) {
-                bookCache.remove(id);
+                cacheHolder.getBookCache().remove(id);
             } else {
-                bookCache.put(id, book);
+                cacheHolder.getBookCache().put(id, book);
             }
         } else {
-            logger.log(Level.FINE, "Book {0} was loaded from cache", id.intValue());
+            logger.log(Level.INFO, "Book {0} was loaded from cache", id.intValue());
         }
         Hibernate.initialize(book.getAuthors());
         return book;
@@ -74,6 +73,9 @@ public class BookService {
 
     @Transactional
     public Book create(Book book) {
+        if (book == null) {
+            throw new BadRequestException("Book cannot be null");
+        }
         return bookRepository.save(book);
     }
 
@@ -82,13 +84,15 @@ public class BookService {
         Book book = getById(id, Resource.LoadMode.DIRECT);
 
         for (Author author : book.getAuthors()) {
-            authorCache.remove(author.getId());
+            cacheHolder.getAuthorCache().remove(author.getId());
             author.getBooks().remove(book);
         }
-        commentRepository.deleteAll(book.getComments());
-        bookRepository.delete(book);
+        if (!book.getComments().isEmpty()) {
+            commentRepository.deleteAll(book.getComments());
+        }
 
-        bookCache.remove(id);
+        bookRepository.delete(book);
+        cacheHolder.getBookCache().remove(id);
     }
 
     @Transactional

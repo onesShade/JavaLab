@@ -2,8 +2,8 @@ package javalab.service;
 
 import java.util.List;
 import java.util.Optional;
+import javalab.config.CacheHolder;
 import javalab.dto.CommentDto;
-import javalab.exception.BadRequestException;
 import javalab.exception.NotFoundException;
 import javalab.mapper.CommentMapper;
 import javalab.model.Book;
@@ -26,8 +26,10 @@ public class CommentService {
     private final CommentMapper commentMapper;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, BookService bookService,
-                          UserRepository userRepository, CommentMapper commentMapper) {
+    public CommentService(CommentRepository commentRepository,
+                          BookService bookService,
+                          UserRepository userRepository,
+                          CommentMapper commentMapper) {
         this.commentRepository = commentRepository;
         this.bookService = bookService;
         this.userRepository = userRepository;
@@ -53,7 +55,7 @@ public class CommentService {
         Book book = bookService.getById(id, Resource.LoadMode.DIRECT);
         Optional<User> user = userRepository.findById(commentDto.getUserId());
         if (user.isEmpty()) {
-            throw new BadRequestException(UserService.USER_ID_NOT_FOUND + commentDto.getUserId());
+            throw new NotFoundException(UserService.USER_ID_NOT_FOUND + commentDto.getUserId());
         }
         Comment comment = commentMapper.toEntity(commentDto);
         comment.setUser(user.get());

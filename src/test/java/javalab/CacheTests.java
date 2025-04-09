@@ -1,17 +1,17 @@
 package javalab;
 
-import org.assertj.core.api.MapAssert;
-import javalab.utility.Cache;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import java.util.Map;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@SpringBootTest
+import java.util.Map;
+import javalab.utility.Cache;
+import org.assertj.core.api.MapAssert;
+import org.junit.jupiter.api.Test;
+
+
 class CacheTests {
 
 	@Test
-	void DeleteOldEntries() {
+    void deleteOldEntries() {
 		Map<Integer, Integer> c1 = new Cache<>(2);
 
 		c1.put(1, 1);

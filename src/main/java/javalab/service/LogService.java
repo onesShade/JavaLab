@@ -6,25 +6,36 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import javalab.exception.BadRequestException;
 import javalab.exception.InternalException;
 import javalab.exception.NotFoundException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import javalab.logger.NoLogging;
 import org.springframework.stereotype.Service;
 
 @Service
+@SuppressWarnings("java:S6829")
 public class LogService {
-    private static final String LOG_FILE_PATH = "logs/app.log";
-    private static final DateTimeFormatter LOG_DATE_FORMATTER
+    static final String LOG_FILE_PATH = "logs/app.log";
+    static final DateTimeFormatter LOG_DATE_FORMATTER
             = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public ResponseEntity<String> getLogsByDate(String date) {
-        File logFile = new File(LOG_FILE_PATH);
+    private final File logFile;
+
+    public LogService() {
+        this(new File(LOG_FILE_PATH));
+    }
+
+    public LogService(File logFile) {
+        this.logFile = logFile;
+    }
+
+    @NoLogging
+    public String getLogsByDate(String date) {
         if (!logFile.exists()) {
-            throw new NotFoundException("Not found log file at " + LOG_FILE_PATH);
+            throw new NotFoundException("Not found log file at " + logFile.getPath());
         }
 
         List<String> filteredLogs = filterLogsByDate(logFile, date);
@@ -32,17 +43,18 @@ public class LogService {
             throw new NotFoundException("No logs found for " + date);
         }
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.TEXT_PLAIN)
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"logs-" + date + ".txt\"")
-                .body(String.join("\n", filteredLogs));
+        return String.join("\n", filteredLogs);
     }
 
-    private List<String> filterLogsByDate(File logFile, String date) {
+    @NoLogging
+    public List<String> filterLogsByDate(File logFile, String date) {
         List<String> filteredLogs = new ArrayList<>();
-        LocalDate targetDate = LocalDate.parse(date, LOG_DATE_FORMATTER);
-
+        LocalDate targetDate;
+        try {
+            targetDate = LocalDate.parse(date, LOG_DATE_FORMATTER);
+        } catch (DateTimeParseException e) {
+            throw new BadRequestException(e.getMessage());
+        }
         try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
             String line;
             while ((line = reader.readLine()) != null) {

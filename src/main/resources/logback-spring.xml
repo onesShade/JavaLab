@@ -14,7 +14,7 @@
     </appender>
 
     <!-- Кастомный файловый аппендер -->
-    <appender name="FILE" class="javalab.utility.SingleFileWithRetentionAppender">
+    <appender name="FILE" class="javalab.logger.SingleFileWithRetentionAppender">
         <file>${LOG_FILE}</file>
         <encoder>
             <pattern>${LOG_PATTERN}</pattern>
@@ -23,7 +23,7 @@
     </appender>
 
     <!-- Уровень логирования -->
-    <root level="TRACE">
+    <root level="INFO">
         <appender-ref ref="CONSOLE" /> <!-- Логи в консоль -->
         <appender-ref ref="FILE" />    <!-- Логи в файл -->
     </root>

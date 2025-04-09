@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,11 +55,31 @@ public class CommentController {
         return commentService.create(id, comment);
     }
 
+    @PostMapping("/bulk")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(
+            summary = "Create a new comment",
+            description = "Creates comments for an existing book. "
+                    + "Shall contain texts and user ids"
+    )
+    public List<Comment> createInBulk(@PathVariable Long id,
+                                @Valid @RequestBody List<CommentDto> comments) {
+        return comments.stream().map(commentDto
+                -> commentService.create(id, commentDto)).toList();
+    }
+
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a com for book ID by comment ID")
     public void delete(@PathVariable Long id, @PathVariable Long commentId) {
         commentService.delete(id, commentId);
+    }
+
+    @DeleteMapping()
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete comments for book ID by comment IDs")
+    public void deleteBulk(@PathVariable Long id, @RequestParam List<Long> ids) {
+        ids.forEach(commentId -> commentService.delete(id, commentId));
     }
 
     @PutMapping("/{commentId}")

@@ -1,4 +1,4 @@
-package javalab.utility;
+package javalab.logger;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,18 +17,19 @@ public class LoggerAspect {
 
     @Before("execution(* javalab..*(..))")
     public void logBefore(JoinPoint joinPoint) {
-        logger.log(Level.FINEST, "Executing: {0}", joinPoint.getSignature().toShortString());
+        logger.log(Level.INFO, "Executing: {0}", joinPoint.getSignature().toShortString());
     }
 
-    @AfterReturning(pointcut = "execution(* javalab..*(..))", returning = "result")
+    @AfterReturning(pointcut = "execution(* javalab..*(..)) && "
+            + "!@annotation(javalab.logger.NoLogging)", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
-        logger.log(Level.FINEST, "Executed: {0} with result: {1}",
+        logger.log(Level.INFO, "Executed: {0} with result: {1}",
                 new Object[]{joinPoint.getSignature().toShortString(), result});
     }
 
     @AfterThrowing(pointcut = "execution(* javalab..*(..))", throwing = "error")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable error) {
-        logger.log(Level.SEVERE, "Exception in: {0} with cause: {1}",
+        logger.log(Level.INFO, "Exception in: {0} with cause: {1}",
                 new Object[]{joinPoint.getSignature().toShortString(), error.getMessage()});
     }
 }

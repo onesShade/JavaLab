@@ -15,12 +15,16 @@ import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(description = "Model of author")
 @Table(name = "authors")
 public class Author {
@@ -42,7 +46,6 @@ public class Author {
     @Schema(description = "List of the books of the author")
     private List<Book> books = new ArrayList<>();
 
-    protected Author() {}
 
     public Author(String name) {
         this.name = name;

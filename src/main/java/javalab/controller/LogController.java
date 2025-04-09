@@ -2,8 +2,11 @@ package javalab.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javalab.logger.NoLogging;
 import javalab.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,7 +24,12 @@ public class LogController {
 
     @GetMapping("/logs")
     @Operation(summary = "Get logs of a given date")
+    @NoLogging
     public ResponseEntity<String> getLogsByDate(@RequestParam String date) {
-        return logService.getLogsByDate(date);
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"logs-" + date + ".txt\"")
+                .body(logService.getLogsByDate(date));
     }
 }
