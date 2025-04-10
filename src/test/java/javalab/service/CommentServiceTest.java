@@ -19,8 +19,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import javalab.config.CacheHolder;
 import javalab.dto.CommentDto;
 import javalab.exception.NotFoundException;
 import javalab.mapper.CommentMapper;
@@ -28,10 +26,8 @@ import javalab.model.Author;
 import javalab.model.Book;
 import javalab.model.Comment;
 import javalab.model.User;
-import javalab.repository.BookRepository;
 import javalab.repository.CommentRepository;
 import javalab.repository.UserRepository;
-import javalab.utility.Cache;
 import javalab.utility.Resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,21 +42,11 @@ class CommentServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private BookRepository bookRepository;
-    @Mock
-    private CacheHolder cacheHolder;
-    @Mock
     private CommentMapper commentMapper;
     @Mock
     private BookService bookService;
-    @Mock
-    private UserService userService;
     @InjectMocks
     private CommentService commentService;
-    @Mock
-    private Cache<Long, Author> authorCache; // Add this line
-    @Mock
-    private Cache<Long, Book> bookCache;
 
     @Test
     void getById_ShouldReturnComment_WhenExists() {
