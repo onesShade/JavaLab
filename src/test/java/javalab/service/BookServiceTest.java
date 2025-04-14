@@ -25,7 +25,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataAccessException;
-import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
@@ -277,7 +276,6 @@ class BookServiceTest {
     }
 
     @Test
-    @Transactional
     void create_ShouldSaveBookAndReturnIt() {
         Book newBook = new Book("New Book", new ArrayList<>(), 200);
         Book savedBook = new Book(1L, "New Book", 200, new ArrayList<>(), new ArrayList<>());
@@ -298,7 +296,6 @@ class BookServiceTest {
     }
 
     @Test
-    @Transactional
     void create_ShouldHandleEmptyTitle() {
         Book book = new Book("", new ArrayList<>(), 100);
         Book savedBook = new Book(1L, "", 100, new ArrayList<>(), new ArrayList<>());
@@ -312,7 +309,6 @@ class BookServiceTest {
     }
 
     @Test
-    @Transactional
     void create_ShouldHandleZeroPages() {
         Book book = new Book("Zero Pages Book", new ArrayList<>(), 0);
         Book savedBook = new Book(1L, "Zero Pages Book", 0, new ArrayList<>(), new ArrayList<>());
@@ -327,7 +323,6 @@ class BookServiceTest {
     }
 
     @Test
-    @Transactional
     void create_ShouldHandleNegativePages() {
         // Arrange
         Book book = new Book("Negative Pages", new ArrayList<>(), -50);
@@ -342,7 +337,6 @@ class BookServiceTest {
     }
 
     @Test
-    @Transactional
     void create_ShouldPropagateDatabaseExceptions() {
         Book validBook = new Book("Valid Book", new ArrayList<>(), 200);
         when(bookRepository.save(validBook)).thenThrow(new DataAccessException("DB error") {});
@@ -352,7 +346,6 @@ class BookServiceTest {
     }
 
     @Test
-    @Transactional
     void create_ShouldHandleExistingAuthors() {
         Author author = new Author("Existing Author", 1L, Collections.emptyList());
         Book book = new Book("Book With Author", List.of(author), 300);
@@ -367,7 +360,6 @@ class BookServiceTest {
     }
 
     @Test
-    @Transactional
     void create_ShouldHandleEmptyAuthorList() {
         Book book = new Book("No Authors Book", new ArrayList<>(), 400);
         Book savedBook = new Book(1L, "No Authors Book", 400, new ArrayList<>(), new ArrayList<>());
@@ -451,7 +443,6 @@ class BookServiceTest {
     }
 
     @Test
-    @Transactional
     void update_ShouldUpdateExistingBook() {
         Long bookId = 1L;
         Book existingBook = new Book(bookId, "Old Title", 200, Collections.emptyList(), Collections.emptyList());
@@ -467,7 +458,6 @@ class BookServiceTest {
         verify(bookRepository).save(updatedBook);
         verify(cacheHolder.getBookCache()).remove(bookId);
     }
-
 
     @Test
     void update_ShouldThrowWhenBookNotFound() {

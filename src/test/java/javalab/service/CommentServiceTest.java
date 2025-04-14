@@ -63,7 +63,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void getById_ShouldThhrowNotFoundException_WhenNotExists() {
+    void getById_ShouldThrowNotFoundException_WhenNotExists() {
         Long commentId = 1L;
         when(commentRepository.findById(commentId))
                 .thenReturn(Optional.empty());
@@ -283,5 +283,4 @@ class CommentServiceTest {
         assertEquals(commentId, result.getId());
         assertEquals(book, result.getBook());
     }
-
 }
