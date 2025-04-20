@@ -1,71 +1,59 @@
 package javalab.service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
-import javalab.exception.BadRequestException;
-import javalab.exception.InternalException;
-import javalab.exception.NotFoundException;
+import java.util.concurrent.atomic.AtomicLong;
+import javalab.config.CacheHolder;
 import javalab.logger.NoLogging;
+import javalab.model.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@SuppressWarnings("java:S6829")
 public class LogService {
-    static final String LOG_FILE_PATH = "logs/app.log";
-    static final DateTimeFormatter LOG_DATE_FORMATTER
-            = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final String NO_SUCH_LOG = "No such log id exists in cache";
+    private final CacheHolder cacheHolder;
+    private final AtomicLong idCounter = new AtomicLong(1);
+    private final AsyncLogService asyncLogService;
 
-    private final File logFile;
-
-    public LogService() {
-        this(new File(LOG_FILE_PATH));
+    @Autowired
+    public LogService(CacheHolder cacheHolder, AsyncLogService asyncLogService) {
+        this.cacheHolder = cacheHolder;
+        this.asyncLogService = asyncLogService;
     }
 
-    public LogService(File logFile) {
-        this.logFile = logFile;
+    public Log generateLogs(String date) {
+        Long id = idCounter.getAndIncrement();
+        Log log = new Log(id, Log.Status.IN_PROGRESS, date);
+        cacheHolder.getLogFileCache().put(id, log);
+        asyncLogService.createLogs(id, date);
+        return log;
+    }
+
+    public String getLogStatus(Long id) {
+        if (!cacheHolder.getLogFileCache().containsKey(id)) {
+            return NO_SUCH_LOG;
+        }
+        return cacheHolder.getLogFileCache().get(id).getStatus().name();
+    }
+
+    public String getLogDate(Long id) {
+        if (!cacheHolder.getLogFileCache().containsKey(id)) {
+            return NO_SUCH_LOG;
+        }
+        return cacheHolder.getLogFileCache().get(id).getDate();
     }
 
     @NoLogging
-    public String getLogsByDate(String date) {
-        if (!logFile.exists()) {
-            throw new NotFoundException("Not found log file at " + logFile.getPath());
+    public String getLogBody(Long id) {
+        if (!cacheHolder.getLogFileCache().containsKey(id)) {
+            return NO_SUCH_LOG;
         }
 
-        List<String> filteredLogs = filterLogsByDate(logFile, date);
-        if (filteredLogs.isEmpty()) {
-            throw new NotFoundException("No logs found for " + date);
+        if (cacheHolder.getLogFileCache().get(id).getStatus() == Log.Status.IN_PROGRESS) {
+            return "Log file still in progress.";
         }
-
-        return String.join("\n", filteredLogs);
-    }
-
-    @NoLogging
-    public List<String> filterLogsByDate(File logFile, String date) {
-        List<String> filteredLogs = new ArrayList<>();
-        LocalDate targetDate;
-        try {
-            targetDate = LocalDate.parse(date, LOG_DATE_FORMATTER);
-        } catch (DateTimeParseException e) {
-            throw new BadRequestException(e.getMessage());
+        if (cacheHolder.getLogFileCache().get(id).getStatus() == Log.Status.FAILURE) {
+            return "Failure to generate log.";
         }
-        try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.startsWith(targetDate.toString())) {
-                    filteredLogs.add(line);
-                }
-            }
-        } catch (IOException e) {
-            throw new InternalException("Error filtering logs : " + e.getMessage());
-        }
-
-        return filteredLogs;
+        return cacheHolder.getLogFileCache().get(id).getBody();
     }
 }

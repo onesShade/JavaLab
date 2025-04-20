@@ -15,7 +15,7 @@ public class LoggerAspect {
 
     Logger logger = Logger.getLogger(getClass().getName());
 
-    @Before("execution(* javalab..*(..))")
+    @Before("execution(* javalab..*(..)) && !@annotation(javalab.logger.NoLogging)")
     public void logBefore(JoinPoint joinPoint) {
         logger.log(Level.INFO, "Executing: {0}", joinPoint.getSignature().toShortString());
     }
@@ -27,7 +27,8 @@ public class LoggerAspect {
                 new Object[]{joinPoint.getSignature().toShortString(), result});
     }
 
-    @AfterThrowing(pointcut = "execution(* javalab..*(..))", throwing = "error")
+    @AfterThrowing(pointcut = "execution(* javalab..*(..)) &&"
+            + "!@annotation(javalab.logger.NoLogging)", throwing = "error")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable error) {
         logger.log(Level.INFO, "Exception in: {0} with cause: {1}",
                 new Object[]{joinPoint.getSignature().toShortString(), error.getMessage()});
