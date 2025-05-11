@@ -34,24 +34,30 @@ public class AsyncLogService {
     }
 
 
+    @SuppressWarnings("checkstyle:CatchParameterName")
     @Async("taskExecutor")
     public void createLogs(Long taskId, String date) {
         try {
             Thread.sleep(10000);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException _) {
             Thread.currentThread().interrupt();
         }
 
+        Log log = new Log(taskId, Log.Status.FAILURE, date);
+        cacheHolder.getLogFileCache().put(taskId, log);
+
         if (!logFile.exists()) {
+            cacheHolder.getLogFileCache().put(taskId, log);
             throw new NotFoundException("Not found log file at " + logFile.getPath());
         }
 
         List<String> filteredLogs = filterLogsByDate(logFile, date);
         if (filteredLogs.isEmpty()) {
+            cacheHolder.getLogFileCache().put(taskId, log);
             throw new NotFoundException("No logs found for " + date);
         }
 
-        Log log = new Log(taskId, Log.Status.SUCCESS, date);
+        log.setStatus(Log.Status.SUCCESS);
         log.setBody(String.join("\n", filteredLogs));
         cacheHolder.getLogFileCache().put(taskId, log);
     }

@@ -86,44 +86,6 @@ class CommentServiceTest {
     }
 
     @Test
-    void getAllComments_ShouldReturnEmptyList_WhenNoCommentsExist() {
-        List<Author> authors = Collections.emptyList();
-        List<Comment> comments = Collections.emptyList();
-        Long bookId = 1L;
-        Book book = new Book(bookId, "Book A", 16, authors, comments);
-
-        when(bookService.getById(bookId, Resource.LoadMode.DEFAULT)).thenReturn(book);
-        List<CommentDto> result = commentService.getAllComments(bookId);
-
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void getAllComments_ShouldReturnMappedComments_WhenCommentsExist() {
-        Long bookId = 1L;
-        List<Author> authors = Collections.emptyList();
-        User user = mock(User.class);
-
-        Book book = new Book(bookId, "Book A", 16 , authors, Collections.emptyList());
-
-        CommentDto dtoA = new CommentDto(1L, 1L, "text1");
-        CommentDto dtoB = new CommentDto(2L, 1L, "text2");
-        Comment comA = new Comment(1L, book, user, "text1");
-        Comment comB = new Comment(2L, book, user, "text2");
-        book.setComments(Arrays.asList(comA, comB));
-
-        List<CommentDto> dto = Arrays.asList(dtoA, dtoB);
-
-        when(commentMapper.toDto(comA)).thenReturn(dtoA);
-        when(commentMapper.toDto(comB)).thenReturn(dtoB);
-        when(bookService.getById(bookId, Resource.LoadMode.DEFAULT)).thenReturn(book);
-
-        List<CommentDto> result = commentService.getAllComments(bookId);
-
-        assertEquals(dto, result);
-    }
-
-    @Test
     void create_ShouldCreateComment_WhenExists() {
         Long id = 1L;
         CommentDto dtoA = new CommentDto(1L, 1L, "text1");

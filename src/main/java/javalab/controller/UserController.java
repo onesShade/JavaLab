@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import javalab.dto.CommentDto;
+import javalab.mapper.CommentMapper;
 import javalab.model.User;
 import javalab.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final CommentMapper commentMapper;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, CommentMapper commentMapper) {
         this.userService = userService;
+        this.commentMapper = commentMapper;
     }
 
     @GetMapping("/all")
@@ -66,5 +70,13 @@ public class UserController {
     @Operation(summary = "Update user by ID")
     public User update(@PathVariable Long id, @Valid @RequestBody User user) {
         return userService.update(id, user);
+    }
+
+    @GetMapping("/{id}/comments")
+    @Operation(summary = "Get user by id")
+    public List<CommentDto> getComments(@PathVariable Long id) {
+        return userService.getUserComments(id).stream()
+                .map(commentMapper::toDto)
+                .toList();
     }
 }

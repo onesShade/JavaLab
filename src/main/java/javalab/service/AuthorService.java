@@ -71,6 +71,11 @@ public class AuthorService {
         if (author == null) {
             throw new BadRequestException("Author cannot be null");
         }
+
+        if (authorRepository.findByName(author.getName()).isPresent()) {
+            throw new ConflictException("Author name already exists");
+        }
+
         return authorRepository.save(author);
     }
 
@@ -114,7 +119,11 @@ public class AuthorService {
     }
 
     public Author update(Long id, Author author) {
-        getById(id, Resource.LoadMode.DEFAULT);
+        Author original = getById(id, Resource.LoadMode.DEFAULT);
+        if (authorRepository.findByName(author.getName()).isPresent()
+                && !original.getName().equals(author.getName())) {
+            throw new ConflictException("Author name already exists");
+        }
         author.setId(id);
         cacheHolder.getAuthorCache().remove(id);
         return authorRepository.save(author);

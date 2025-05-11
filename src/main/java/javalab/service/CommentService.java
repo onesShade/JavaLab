@@ -2,6 +2,8 @@ package javalab.service;
 
 import java.util.List;
 import java.util.Optional;
+
+import javalab.config.CacheHolder;
 import javalab.dto.CommentDto;
 import javalab.exception.NotFoundException;
 import javalab.mapper.CommentMapper;
@@ -22,16 +24,19 @@ public class CommentService {
     private final BookService bookService;
     private final UserRepository userRepository;
     private final CommentMapper commentMapper;
+    private final CacheHolder cacheHolder;
 
     @Autowired
     public CommentService(CommentRepository commentRepository,
                           BookService bookService,
                           UserRepository userRepository,
-                          CommentMapper commentMapper) {
+                          CommentMapper commentMapper,
+                          CacheHolder cacheHolder) {
         this.commentRepository = commentRepository;
         this.bookService = bookService;
         this.userRepository = userRepository;
         this.commentMapper = commentMapper;
+        this.cacheHolder = cacheHolder;
     }
 
     public Comment getById(Long id) {
@@ -61,12 +66,11 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public void delete(Long bookId, Long commentId) {
+    public void delete(Long commentId) {
         if (!commentRepository.existsById(commentId)) {
             throw new NotFoundException(COMMENT_ID_NOT_FOUND + commentId);
         }
-        bookService.getById(bookId, Resource.LoadMode.DIRECT)
-                .getComments().remove(getById(commentId));
+        cacheHolder.getBookCache().clear();
         commentRepository.deleteById(commentId);
     }
 

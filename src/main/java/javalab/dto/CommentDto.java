@@ -16,6 +16,7 @@ import lombok.Setter;
 @Schema(description = "DTO model of the comment")
 public class CommentDto {
     private Long id;
+    UserDto user;
 
     @NotNull(message = "User id should be specified")
     private Long userId;
@@ -23,4 +24,6 @@ public class CommentDto {
     @NotBlank(message = "Text cannot be null")
     @Size(min = 1, max = 255, message = "Text must be between 1 and 255 characters")
     private String text;
+
+    private BookDto book;
 }

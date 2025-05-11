@@ -30,7 +30,7 @@ public class LogService {
 
     public String getLogStatus(Long id) {
         if (!cacheHolder.getLogFileCache().containsKey(id)) {
-            return NO_SUCH_LOG;
+            return "FAILURE";
         }
         return cacheHolder.getLogFileCache().get(id).getStatus().name();
     }

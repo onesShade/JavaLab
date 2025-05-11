@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javalab.config.CacheHolder;
 import javalab.exception.BadRequestException;
+import javalab.exception.ConflictException;
 import javalab.exception.NotFoundException;
 import javalab.model.Author;
 import javalab.model.Book;
@@ -74,6 +75,11 @@ public class BookService {
         if (book == null) {
             throw new BadRequestException("Book cannot be null");
         }
+
+        if (bookRepository.findByTitle(book.getTitle()).isPresent()) {
+            throw new ConflictException("Book already exists");
+        }
+
         return bookRepository.save(book);
     }
 
@@ -93,7 +99,12 @@ public class BookService {
     }
 
     public Book update(Long id, Book book) {
-        getById(id, Resource.LoadMode.DIRECT);
+        Book original = getById(id, Resource.LoadMode.DIRECT);
+        if (bookRepository.findByTitle(book.getTitle()).isPresent()
+                && !original.getTitle().equals(book.getTitle())) {
+            throw new ConflictException("Book title already exists");
+        }
+        book.setComments(original.getComments());
         book.setId(id);
         return bookRepository.save(book);
     }

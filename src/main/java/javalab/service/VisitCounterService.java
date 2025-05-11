@@ -10,7 +10,7 @@ public class VisitCounterService {
 
     @NoLogging
     public void increment() {
-        counter.incrementAndGet();
+        counter.getAndIncrement();
     }
 
     public Long getCount() {

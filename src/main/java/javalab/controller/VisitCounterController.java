@@ -5,6 +5,7 @@ import java.util.Map;
 import javalab.logger.NoLogging;
 import javalab.service.VisitCounterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,8 +24,9 @@ public class VisitCounterController {
 
     @PostMapping
     @NoLogging
-    public void increment() {
+    public ResponseEntity<Void> increment() {
         visitCounterService.increment();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping
