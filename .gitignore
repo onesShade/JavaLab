@@ -38,5 +38,4 @@ mvnw.cmd
 mvnw
 .mvn/*
 
-src/main/resources/*
 logs/*
