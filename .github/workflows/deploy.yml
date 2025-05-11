@@ -1,0 +1,20 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Trigger Render deploy
+        run: |
+          echo "  Sending deploy request to Render..."
+          curl -X POST "https://api.render.com/deploy/srv-d0g9pi2dbo4c73b5uph0?key=6gjAC-7dZj4"
+          echo "  Render started deploy"
