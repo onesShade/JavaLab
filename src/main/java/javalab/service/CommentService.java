@@ -15,6 +15,7 @@ import javalab.repository.UserRepository;
 import javalab.utility.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -45,6 +46,7 @@ public class CommentService {
                         new NotFoundException(COMMENT_ID_NOT_FOUND + id));
     }
 
+    @Transactional
     public List<CommentDto> getAllComments(Long bookId) {
         List<Comment> comments =
                 bookService.getById(bookId, Resource.LoadMode.DEFAULT).getComments();
