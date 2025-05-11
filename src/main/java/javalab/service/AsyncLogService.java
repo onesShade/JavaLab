@@ -39,7 +39,7 @@ public class AsyncLogService {
     public void createLogs(Long taskId, String date) {
         try {
             Thread.sleep(10000);
-        } catch (InterruptedException _) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
