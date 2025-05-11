@@ -37,7 +37,6 @@ build/
 mvnw.cmd
 mvnw
 .mvn/*
-pom.xml
 
 src/main/resources/*
 logs/*
