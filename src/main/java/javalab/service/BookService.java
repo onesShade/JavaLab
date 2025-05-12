@@ -16,7 +16,6 @@ import javalab.utility.Resource;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BookService {
@@ -37,12 +36,10 @@ public class BookService {
         this.logger = Logger.getLogger(this.getClass().getName());
     }
 
-    @Transactional
     public List<Book> getBooks() {
         return bookRepository.findAll();
     }
 
-    @Transactional
     public Book getById(Long id, Resource.LoadMode mode) {
         Book book = mode == Resource.LoadMode.DEFAULT ? cacheHolder.getBookCache().get(id) : null;
         if (book == null) {
